@@ -1,18 +1,14 @@
 defmodule ElixirPlug do
-  @moduledoc """
-  Documentation for ElixirPlug.
-  """
+  use Application
+  require Logger
 
-  @doc """
-  Hello world.
+  def start(_type, _args) do
+    children = [
+      Plug.Adapters.Cowboy.child_spec(:http, ElixirPlug.Controller, [], port: 8080)
+    ]
 
-  ## Examples
+    Logger.info("Started application")
 
-      iex> ElixirPlug.hello
-      :world
-
-  """
-  def hello do
-    :world
+    Supervisor.start_link(children, strategy: :one_for_one)
   end
 end
